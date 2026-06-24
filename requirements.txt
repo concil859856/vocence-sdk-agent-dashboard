@@ -1,0 +1,6 @@
+vocence>=0.7.2
+vocence-plugins>=0.1.2
+fastapi>=0.110
+uvicorn[standard]>=0.27
+python-dotenv>=1.0
+openai>=1.0          # only used if you set LLM_API_KEY (BYO brain)

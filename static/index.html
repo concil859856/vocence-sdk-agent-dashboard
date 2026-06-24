@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocence SDK Dashboard — Agents &amp; Voice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">◎</span>
+      <span class="brand-name">Vocence</span>
+      <span class="brand-sub">SDK Dashboard · agents &amp; real-time voice</span>
+    </div>
+    <div class="account" id="account">
+      <span class="acc-plan" id="accPlan">—</span>
+      <span class="acc-credits" id="accCredits">—</span>
+      <span class="acc-email" id="accEmail">connecting…</span>
+    </div>
+  </header>
+
+  <main class="grid">
+    <!-- ── Agents sidebar ─────────────────────────────────────────── -->
+    <aside class="col agents">
+      <div class="col-head">
+        <h2>Agents</h2>
+        <button id="newAgent" class="btn tiny primary">+ New</button>
+      </div>
+      <div id="agentList" class="agent-list"></div>
+    </aside>
+
+    <!-- ── Editor ─────────────────────────────────────────────────── -->
+    <section class="col editor">
+      <div class="col-head">
+        <h2 id="editorTitle">Agent settings</h2>
+        <span class="status-chip" id="statusChip" hidden></span>
+      </div>
+      <form id="agentForm" class="col-body">
+        <div class="row-2">
+          <label>Name <span class="req">*</span>
+            <input id="f_name" type="text" placeholder="My Agent" required />
+          </label>
+          <label>Type <span class="req">*</span>
+            <select id="f_type"><option value="knowledge">knowledge</option><option value="goal">goal</option></select>
+          </label>
+        </div>
+        <div class="row-2">
+          <label>Voice
+            <select id="f_voice"></select>
+          </label>
+          <label>Language
+            <input id="f_language" type="text" placeholder="English" />
+          </label>
+        </div>
+        <div class="row-2">
+          <label>LLM model
+            <input id="f_llm_model" type="text" placeholder="e.g. gemini:gemini-2.5-flash" />
+          </label>
+          <label>Temperature
+            <input id="f_temperature" type="number" step="0.1" min="0" max="2" placeholder="0.6" />
+          </label>
+        </div>
+        <div class="row-2">
+          <label>Status
+            <select id="f_status"><option value="draft">draft</option><option value="active">active</option><option value="paused">paused</option><option value="archived">archived</option></select>
+          </label>
+          <label>Record calls
+            <select id="f_record_enabled"><option value="false">off</option><option value="true">on</option></select>
+          </label>
+        </div>
+        <label>First message (greeting)
+          <input id="f_first_message" type="text" placeholder="Hi! How can I help?" />
+        </label>
+        <label>Purpose
+          <input id="f_purpose" type="text" placeholder="One line on what this agent does" />
+        </label>
+        <label>System prompt
+          <textarea id="f_system_prompt" rows="6" placeholder="You are a helpful, concise voice assistant…"></textarea>
+        </label>
+        <label>Knowledge (optional)
+          <textarea id="f_knowledge" rows="3" placeholder="Facts the agent should know…"></textarea>
+        </label>
+      </form>
+      <div class="col-foot">
+        <button id="saveAgent" class="btn primary">Save</button>
+        <button id="deleteAgent" class="btn danger" hidden>Delete</button>
+        <span id="saveMsg" class="save-msg"></span>
+      </div>
+    </section>
+
+    <!-- ── Voice chat ─────────────────────────────────────────────── -->
+    <aside class="col chat-col">
+      <div class="col-head">
+        <h2>Talk</h2>
+        <span class="pill"><span class="dot" id="dot"></span><span id="state">Idle</span></span>
+      </div>
+      <div id="chat" class="chat">
+        <div class="hint" id="chatHint">Select an agent, click <b>Call</b>, and talk to it live.</div>
+      </div>
+      <div id="caption" class="caption"></div>
+      <div class="controls">
+        <button id="callBtn" class="call" type="button" disabled><span class="ico">🎙️</span><span class="label">Call</span></button>
+        <form id="composer" class="composer">
+          <input id="textInput" type="text" placeholder="Type instead…" autocomplete="off" />
+          <button type="submit" class="send">➤</button>
+        </form>
+      </div>
+    </aside>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
