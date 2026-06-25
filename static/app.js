@@ -207,16 +207,13 @@ async function createCustomTool() {
 function fmtDur(ms) { const s = Math.round((ms || 0) / 1000); return `${Math.floor(s / 60)}m ${s % 60}s`; }
 function fmtWhen(iso) { try { return new Date(iso).toLocaleString(); } catch { return iso || ''; } }
 async function openCalls() {
-  if (!currentId) { alert('Select an agent first.'); return; }
-  const modal = $('#callsModal'), body = $('#callsBody');
-  if (!modal || !body) { alert('Calls UI not found — the page is stale. Hard-reload (Ctrl-Shift-R).'); return; }
-  modal.hidden = false;
-  modal.style.display = 'grid';                 // belt-and-suspenders in case of stale CSS
+  if (!currentId) return;
+  const body = $('#callsBody');
+  $('#callsModal').hidden = false;
   body.innerHTML = '<div class="muted">Loading…</div>';
   try {
-    const calls = await api(`/api/agents/${currentId}/calls?ui=1`);
-    if (!Array.isArray(calls)) { body.innerHTML = '<div class="muted">Unexpected response: ' + JSON.stringify(calls).slice(0, 200) + '</div>'; return; }
-    if (!calls.length) { body.innerHTML = '<div class="muted">No calls yet for this agent.</div>'; return; }
+    const calls = await api(`/api/agents/${currentId}/calls`);
+    if (!Array.isArray(calls) || !calls.length) { body.innerHTML = '<div class="muted">No calls yet for this agent.</div>'; return; }
     body.innerHTML = calls.map(callRow).join('');
     document.querySelectorAll('.call-item .call-head').forEach((h) => (h.onclick = () => loadCall(h.parentElement)));
   } catch (e) {
