@@ -256,7 +256,19 @@ async def ws(browser: WebSocket) -> None:
                         elif typ == "audio_settled":       # speakers silent → server unmutes mic
                             await sess.notify_audio_settled()
 
-            await asyncio.gather(to_browser(), from_browser())
+            # When EITHER side ends — the browser tab closes (from_browser
+            # returns) or the agent session ends (to_browser returns) — cancel
+            # the other and exit the `async with`, which closes the hosted
+            # session immediately. Without this the session lingers open
+            # (and keeps billing) until the backend's own idle/max watchdog
+            # reaps it, so a closed tab can leak a live, billed session.
+            tasks = [asyncio.create_task(to_browser()), asyncio.create_task(from_browser())]
+            try:
+                await asyncio.wait(tasks, return_when=asyncio.FIRST_COMPLETED)
+            finally:
+                for t in tasks:
+                    t.cancel()
+                await asyncio.gather(*tasks, return_exceptions=True)
     except Exception:
         pass
     finally:
